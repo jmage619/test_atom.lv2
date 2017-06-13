@@ -87,30 +87,36 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
 
   // Set up forge to write directly to notify output port.
   const uint32_t notify_capacity = plugin->notify_port->atom.size;
+  
   lv2_atom_forge_set_buffer(&plugin->forge, (uint8_t*) plugin->notify_port,
     notify_capacity);
 
   //LV2_Atom_Forge_Frame seq_frame;
-  lv2_atom_forge_sequence_head(&plugin->forge, &plugin->seq_frame, 0);
+  LV2_Atom* seq = (LV2_Atom*) lv2_atom_forge_sequence_head(&plugin->forge, &plugin->seq_frame, 0);
 
   LV2_ATOM_SEQUENCE_FOREACH(plugin->control_port, ev) {
     if (ev->body.type == plugin->uris.atom_Object) {
       const LV2_Atom_Object* obj = (const LV2_Atom_Object*)&ev->body;
       if (obj->body.otype == plugin->uris.ta_getZones) {
         fprintf(stderr, "PLUGIN: get zones received!!\n");
+        fprintf(stderr, "PLUGIN: notify capacity: %i\n", notify_capacity);
         int i;
-        for (i = 0; i < 10; ++i) {
+        // ardour notify cap is 32768, qtractor is 20480
+        //for (i = 0; i < 68; ++i) {
+        for (i = 0; i < 42; ++i) {
           lv2_atom_forge_frame_time(&plugin->forge, 0);
           LV2_Atom_Forge_Frame obj_frame;
-          LV2_Atom* obj = (LV2_Atom*)lv2_atom_forge_object(&plugin->forge, &obj_frame, 0, plugin->uris.ta_addZone);
+          LV2_Atom* new_obj = (LV2_Atom*)lv2_atom_forge_object(&plugin->forge, &obj_frame, 0, plugin->uris.ta_addZone);
           lv2_atom_forge_key(&plugin->forge, plugin->uris.ta_params);
           char buf[432];
           sprintf(buf, "zone %i", i);
           lv2_atom_forge_string(&plugin->forge, buf, 432);
           lv2_atom_forge_pop(&plugin->forge, &obj_frame);
 
-          fprintf(stderr, "PLUGIN: sent addZone %i; obj size: %i\n", i, lv2_atom_total_size(obj));
+          fprintf(stderr, "PLUGIN: sent addZone %i; obj size: %i\n", i, lv2_atom_total_size(new_obj));
         }
+        lv2_atom_forge_pop(&plugin->forge, &plugin->seq_frame);
+        fprintf(stderr, "PLUGIN: total seq size: %i\n", lv2_atom_total_size(seq));
       }
     }
   }
