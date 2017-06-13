@@ -1,0 +1,15 @@
+@prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ui:   <http://lv2plug.in/ns/extensions/ui#> .
+@prefix exui: <http://kxstudio.sf.net/ns/lv2ext/external-ui#> .
+@prefix urid:  <http://lv2plug.in/ns/ext/urid#> .
+
+<http://lv2plug.in/plugins/test_atom>
+	a lv2:Plugin ;
+	lv2:binary <test_atom.so>  ;
+	rdfs:seeAlso <test_atom.ttl> .
+
+<http://lv2plug.in/plugins/test_atom#ui>
+	a exui:Widget ;
+	ui:binary <test_atom_ui.so> ;
+	rdfs:seeAlso <test_atom.ttl> .
