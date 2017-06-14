@@ -4,6 +4,7 @@
 @prefix atom:  <http://lv2plug.in/ns/ext/atom#> .
 @prefix exui: <http://kxstudio.sf.net/ns/lv2ext/external-ui#> .
 @prefix urid:  <http://lv2plug.in/ns/ext/urid#> .
+@prefix rsz:  <http://lv2plug.in/ns/ext/resize-port#> .
 
 <http://lv2plug.in/plugins/test_atom>
 	a lv2:Plugin;
@@ -25,6 +26,7 @@
 			atom:AtomPort ;
 		atom:bufferType atom:Sequence ;
 		lv2:designation lv2:control ;
+    rsz:minimumSize 20480 ;
 		lv2:index 1 ;
 		lv2:symbol "notify" ;
 		lv2:name "Notify"
